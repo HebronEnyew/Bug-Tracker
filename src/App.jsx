@@ -10,6 +10,7 @@ import AuthProvider from './auths/AuthContext.jsx'
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth()
 
+  
   // Show loading while checking auth - prevents early redirect
   if (loading) {
     return (
