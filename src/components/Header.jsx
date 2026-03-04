@@ -56,7 +56,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-3">
-            <nav className="hidden sm:flex items-center gap-4 text-sm text-gray-400">
+            <nav className="md:flex sm:flex items-center gap-4 text-sm text-gray-400">
               <Link to="/dashboard" className="hover:text-white text-white">Dashboard</Link>
               <Link to="/projects" className="hover:text-white text-white">Projects</Link>
             </nav>
