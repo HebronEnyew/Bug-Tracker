@@ -139,11 +139,17 @@ console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO 
             </button>
 
             <button
+              type="button"
+              disabled={!project?.id}
               onClick={() => {
+                if (project?.id) onDone(project.id)
                 onClose()
-                onDone(project.id)
               }}
-              className="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg transition-colors"
+              className={`px-6 py-3 rounded-lg transition-colors ${
+                project?.id
+                  ? 'bg-green-700 hover:bg-green-600 text-white'
+                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              }`}
             >
               Done ✅
             </button>
