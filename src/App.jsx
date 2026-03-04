@@ -5,12 +5,12 @@ import Login from './auths/login'
 import Signup from './auths/signup'
 import Projects from './pages/Projects'
 import useAuth from './auths/useAuth'
-import AuthProvider from './auths/AuthContext.jsx'  
+import { AuthProvider } from "./auths/AuthContext.jsx"
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth()
 
-  
+
   // Show loading while checking auth - prevents early redirect
   if (loading) {
     return (
