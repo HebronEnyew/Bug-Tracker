@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import React, { useState } from 'react';
 
 export default function ProjectModal({ project, onClose, onSave, onDone }) {
   const [form, setForm] = useState({
@@ -7,47 +6,40 @@ export default function ProjectModal({ project, onClose, onSave, onDone }) {
     description: project?.description || '',
     priority: project?.priority || 'medium',
     status: project?.status || 'todo',
-    id: project?.id || undefined 
-  })
+    id: project?.id || undefined
+  });
 
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null);
+
+  // flag for whether we’re editing an existing project
+  const isEdit = !!form.id;
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     if (!form.title.trim()) {
-      setError('Title is required')
-      return
+      setError('Title is required');
+      return;
     }
 
     try {
-      const saveData = {
-        title: form.title,
-        description: form.description,
-        priority: form.priority,
-        status: form.status
-      }
-
-      await onSave({ ...saveData, id: form.id })
-      onClose()
+      await onSave({ ...form });
     } catch (err) {
-      console.error('Modal submit error:', err)
-      setError(err.message || 'Failed to save project')
+      console.error('Modal submit error:', err);
+      setError(err.message || 'Failed to save project');
+      return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser()
-console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO USER')
-  }
-
-  
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-900 rounded-xl w-full max-w-lg border border-gray-700 shadow-2xl">
         <div className="p-6 border-b border-gray-700 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">
-            {project ? 'Edit Project' : 'New Project'}
+            {project?.id ? 'Edit Project' : 'New Project'}
           </h2>
           <button
             onClick={onClose}
@@ -93,9 +85,7 @@ console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO 
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Priority
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Priority</label>
               <select
                 value={form.priority}
                 onChange={e => setForm({ ...form, priority: e.target.value })}
@@ -108,9 +98,7 @@ console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Status
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
               <select
                 value={form.status}
                 onChange={e => setForm({ ...form, status: e.target.value })}
@@ -135,18 +123,20 @@ console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO 
               type="submit"
               className="px-6 py-3 bg-indigo-700 hover:bg-indigo-600 text-white rounded-lg transition-colors"
             >
-              {project ? 'Save Changes' : 'Add Project'}
+              
+               {isEdit ? 'Save Changes' : 'Add Project'}
+
             </button>
 
             <button
               type="button"
-              disabled={!project?.id}
+              disabled={!isEdit}
               onClick={() => {
-                if (project?.id) onDone(project.id)
-                onClose()
+                if (isEdit) onDone(form.id);
+                onClose();
               }}
               className={`px-6 py-3 rounded-lg transition-colors ${
-                project?.id
+                isEdit
                   ? 'bg-green-700 hover:bg-green-600 text-white'
                   : 'bg-gray-700 text-gray-400 cursor-not-allowed'
               }`}
@@ -157,5 +147,5 @@ console.log('Current user for insert/update:', user ? user.id : 'ANONYMOUS - NO 
         </form>
       </div>
     </div>
-  )
+  );
 }
